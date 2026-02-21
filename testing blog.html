@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Ораторство • Курсы Ольги Блок</title>
+    <!-- Шрифты: Soyuz Grotesk (через локальный + fallback Manrope) + остальные -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..700;1,14..32,400..700&family=Manrope:wght@400;600;800&family=Montserrat:ital,wght@0,400;0,600;0,800;1,400&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* Попытка подключить Soyuz Grotesk (если есть локально) */
+        @font-face {
+            font-family: 'Soyuz Grotesk';
+            src: local('Soyuz Grotesk Bold'), local('SoyuzGrotesk-Bold'),
+                 url('https://example.com/fonts/soyuzgrotesk-bold.woff2') format('woff2'); /* заглушка, замените на реальный файл */
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Soyuz Grotesk';
+            src: local('Soyuz Grotesk'), local('SoyuzGrotesk-Regular');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f9f3ec;
+            color: #1a140f;
+            font-family: 'Space Grotesk', 'Manrope', sans-serif;
+            padding: 1.5rem 1rem 3rem;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Шрифтовые классы */
+        .font-tt { font-family: 'Inter', 'TT Firs Neue', sans-serif; font-weight: 600; }
+        .font-louvelace { font-family: 'Montserrat', 'Louvelace', serif; font-style: italic; }
+        .font-bounded { font-family: 'Space Grotesk', 'Bounded', sans-serif; font-weight: 700; text-transform: uppercase; }
+        .font-soyuz { font-family: 'Manrope', 'Soyuz Grotesk', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+
+        /* Шапка */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .admin-login-trigger {
+            background: #e0cfbf;
+            border-radius: 3rem;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid #c4b09b;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .admin-login-trigger:hover {
+            background: #d2bdab;
+        }
+
+        /* === ХАОТИЧНЫЕ ЗНАКИ ВОПРОСА === */
+        .question-headline {
+            position: relative;
+            text-align: center;
+            font-size: clamp(2rem, 8vw, 3.8rem);
+            margin: 4rem 0 3rem;
+            padding: 1.5rem 0.5rem;
+            color: #2b1e12;
+            background: rgba(255,245,235,0.6);
+            border-radius: 60px;
+            isolation: isolate;
+        }
+        .headline-text {
+            position: relative;
+            z-index: 5;
+            display: inline-block;
+            background: rgba(255, 240, 230, 0.7);
+            backdrop-filter: blur(6px);
+            padding: 0.3rem 1.5rem;
+            border-radius: 60px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            /* Soyuz Grotesk Bold */
+            font-family: 'Soyuz Grotesk', 'Manrope', sans-serif;
+            font-weight: 700; /* Bold */
+            letter-spacing: -0.02em;
+        }
+        .floating-question {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #cc7f2a;
+            opacity: 0.7;
+            z-index: 1;
+            animation: wobble 8s infinite alternate;
+            user-select: none;
+            pointer-events: none;
+        }
+        @keyframes wobble {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(5px, -10px) rotate(10deg); }
+        }
+
+        /* === ЗОНА КУРСОРА (странный курсор) — теперь контент по центру === */
+        .animation-zone {
+            position: relative;
+            min-height: 350px;
+            background: #e7dfd5;
+            border-radius: 3rem;
+            margin: 2rem 0 4rem;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #bda68c;
+            box-shadow: inset 0 0 0 2px #f9efe5;
+        }
+        .strange-cursor {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="%23322B24"><path d="M7 3L21 16 15 18 11 25 7 19 2 15 9 13 5 7 7 3z"/><circle cx="22" cy="9" r="4" fill="%23FF7F2A"/></svg>') no-repeat center/contain;
+            filter: drop-shadow(0 4px 6px #6b4f38);
+            transition: left 0.5s cubic-bezier(0.3, 1.2, 0.4, 1), top 0.5s cubic-bezier(0.3, 1.2, 0.4, 1);
+            z-index: 20;
+            pointer-events: none;
+        }
+        .click-ripple {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,140,0,0.6) 0%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.2s;
+            pointer-events: none;
+        }
+        .hidden-content {
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 800px;
+        }
+        .hidden-content.revealed {
+            opacity: 1;
+        }
+        .orator-photo {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #f3c26b;
+            box-shadow: 10px 12px 0 #a4825a;
+        }
+        .orator-desc {
+            max-width: 440px;
+            background: #fffbf2;
+            padding: 1.4rem 2rem;
+            border-radius: 40px;
+            font-size: 1.4rem;
+            box-shadow: 12px 16px 0 #c9b59e;
+            font-family: 'Manrope', sans-serif;
+        }
+        .highlight {
+            background: linear-gradient(145deg, #fbdf7e, #f9cd4e);
+            padding: 0.1rem 0.4rem;
+            border-radius: 20px;
+            font-weight: 700;
+        }
+
+        /* === КАРУСЕЛЬ РИЛСОВ (видео) === */
+        .section-title {
+            font-size: 2.2rem;
+            margin: 2.5rem 0 1.5rem;
+            border-left: 10px solid #f57c2e;
+            padding-left: 1.2rem;
+        }
+        .reels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+        .reel-card {
+            background: #f2e4d8;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 14px #cbb59f;
+            border: 2px solid #ddcbb8;
+            transition: transform 0.1s;
+            cursor: pointer;
+        }
+        .reel-cover {
+            position: relative;
+            aspect-ratio: 9 / 16;
+            background: #a5886e;
+        }
+        .reel-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .reel-card:hover .play-overlay {
+            opacity: 1;
+        }
+        .play-icon {
+            background: #ff7f2a;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: black;
+            box-shadow: 0 6px 0 #8b5200;
+        }
+        .reel-info {
+            padding: 0.8rem;
+        }
+        .reel-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .reel-desc {
+            font-size: 0.8rem;
+            color: #4f3e2e;
+        }
+        /* Админ-контролы */
+        .admin-controls {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+        }
+        .admin-btn {
+            background: #1e1e1e;
+            color: white;
+            border: none;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .admin-btn.delete {
+            background: #b3461a;
+        }
+
+        /* === КАРУСЕЛЬ ПОСТОВ (горизонтальная) === */
+        .posts-carousel {
+            position: relative;
+            margin: 2rem 0 4rem;
+        }
+        .carousel-container {
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            padding: 0.5rem 0.2rem 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+        }
+        .carousel-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .carousel-container::-webkit-scrollbar-thumb {
+            background: #f28b2e;
+            border-radius: 20px;
+        }
+        .post-card-preview {
+            flex: 0 0 260px;
+            background: #f9efe4;
+            border-radius: 32px;
+            padding: 1.5rem 1rem;
+            border: 3px solid #e6cdb6;
+            box-shadow: 8px 8px 0 #cfb79b;
+            transition: transform 0.15s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .post-card-preview:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 12px 12px 0 #b39275;
+        }
+        .post-preview-author {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .post-preview-author img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e09d5e;
+        }
+        .post-preview-title {
+            font-weight: 700;
+            font-size: 1.3rem;
+            line-height: 1.2;
+        }
+        .post-preview-snippet {
+            font-size: 0.9rem;
+            color: #5c4a36;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        /* кнопки навигации для пк */
+        .carousel-nav {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin: 0.5rem 0 1rem;
+        }
+        .nav-btn {
+            background: #f09d4b;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.8rem;
+            line-height: 1;
+            color: black;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 #b45f1a;
+            transition: 0.1s;
+        }
+        .nav-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 #b45f1a;
+        }
+
+        /* === МОДАЛЬНЫЙ ПЛЕЕР (видео) === */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        .video-modal.active {
+            display: flex;
+        }
+        .video-modal-content {
+            background: #1a1a1a;
+            padding: 1rem;
+            border-radius: 40px;
+            width: 90%;
+            max-width: 500px;
+            border: 5px solid #f2891f;
+        }
+        .video-modal video {
+            width: 100%;
+            border-radius: 30px;
+            outline: none;
+        }
+        .close-video {
+            display: block;
+            text-align: right;
+            color: white;
+            font-size: 2rem;
+            padding: 0 1rem 0.5rem;
+            cursor: pointer;
+        }
+
+        /* === МОДАЛЬНЫЙ ПОСТ (полный текст) === */
+        .post-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            align-items: center;
+            justify-content: center;
+            z-index: 210;
+        }
+        .post-modal.active {
+            display: flex;
+        }
+        .post-modal-content {
+            background: #fff6ed;
+            border-radius: 50px;
+            max-width: 500px;
+            width: 90%;
+            padding: 2rem;
+            border: 6px solid #fc941c;
+            box-shadow: 18px 18px 0 #af5400;
+            position: relative;
+        }
+        .post-modal-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .post-modal-author img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #fc8b2c;
+        }
+        .post-modal-title {
+            font-size: 2rem;
+            font-family: 'Montserrat', serif;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .post-modal-fulltext {
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+        .close-post {
+            position: absolute;
+            top: 1rem; right: 1.5rem;
+            font-size: 2.2rem;
+            cursor: pointer;
+            color: #633c1a;
+        }
+
+        /* === АДМИН ПАНЕЛЬ (оранжево-чёрная) === */
+        .admin-panel {
+            background: #0f0f0f;
+            border: 4px solid #f47b20;
+            border-radius: 50px;
+            padding: 2rem;
+            margin: 3rem 0 2rem;
+            color: #ffe8d6;
+            box-shadow: 0 20px 0 #b35103;
+        }
+        .admin-panel h3 {
+            color: #fda94f;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .admin-panel .admin-logout {
+            background: #f47b20;
+            color: black;
+            border: none;
+            border-radius: 40px;
+            padding: 0.5rem 1.8rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .add-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            background: #2a2a2a;
+            border-radius: 40px;
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .add-form input,
+        .add-form textarea {
+            background: #3d3d3d;
+            border: 2px solid #f48c33;
+            border-radius: 60px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-family: inherit;
+        }
+        .add-form textarea {
+            border-radius: 30px;
+        }
+        .add-form button {
+            background: #f48120;
+            border: none;
+            border-radius: 60px;
+            padding: 0.8rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .add-form button:active {
+            background: #c85d00;
+        }
+
+        /* Модалка логина */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #2b1f14;
+            padding: 2.5rem;
+            border-radius: 60px;
+            width: 320px;
+            border: 4px solid #f68829;
+        }
+        .modal-content input {
+            display: block;
+            width: 100%;
+            margin: 1rem 0;
+            padding: 0.8rem;
+            border-radius: 60px;
+            border: 2px solid #f68829;
+            background: #1e160f;
+            color: white;
+        }
+        .modal-content button {
+            background: #f68829;
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 60px;
+            font-weight: bold;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="font-bounded" style="font-size: 1.6rem;">🎙 КУРСЫ ОРАТОРСТВА</div>
+        <div class="admin-login-trigger" id="adminLoginBtn">adm</div>
+    </div>
+
+    <!-- Заголовок с хаотичными ? и шрифтом Soyuz Grotesk Bold -->
+    <div class="question-headline" id="questionHeadline">
+        <span class="headline-text">как начать снимать себя на видео</span>
+    </div>
+
+    <!-- Анимационная зона (контент по центру) -->
+    <div class="animation-zone" id="animZone">
+        <div class="strange-cursor" id="strangeCursor"></div>
+        <div class="click-ripple" id="clickRipple"></div>
+        <div class="hidden-content" id="hiddenContent">
+            <img src="https://i.ibb.co/8DC6bttF/photo-2025-05-22-22-37-00.jpg" alt="оратор" class="orator-photo" id="oratorImg">
+            <div class="orator-desc">
+                преподаватель <span class="highlight">федеральной школы радио</span>, тренер по <span class="highlight">публичным выступлениям</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Карусель рилсов (видео) -->
+    <section>
+        <h2 class="section-title font-soyuz">🎞 рилсы — практика</h2>
+        <div class="reels-grid" id="reelsContainer"></div>
+    </section>
+
+    <!-- Карусель постов (горизонтальная) -->
+    <section class="posts-carousel">
+        <h2 class="section-title font-louvelace">📖 посты-инсайты</h2>
+        <div class="carousel-nav">
+            <button class="nav-btn" id="scrollLeft">←</button>
+            <button class="nav-btn" id="scrollRight">→</button>
+        </div>
+        <div class="carousel-container" id="postsCarousel"></div>
+    </section>
+
+    <!-- Админ панель (скрыта) -->
+    <div id="adminPanel" class="admin-panel" style="display: none;">
+        <h3>⚡️ админ-кабинет <button class="admin-logout" id="logoutBtn">выйти</button></h3>
+        <div class="add-form">
+            <input type="text" placeholder="URL видео (mp4)" id="reelVideo">
+            <input type="text" placeholder="URL обложки" id="reelCover">
+            <input type="text" placeholder="Заголовок рилса" id="reelTitle">
+            <input type="text" placeholder="Краткое описание" id="reelDesc">
+            <button id="submitReel">🔥 добавить рилс</button>
+        </div>
+        <div class="add-form">
+            <input type="text" placeholder="URL фото автора" id="postAuthorImg">
+            <input type="text" placeholder="Заголовок поста" id="postTitle">
+            <textarea rows="2" placeholder="Текст поста (полный)" id="postText"></textarea>
+            <input type="text" placeholder="Краткий сниппет (опционально)" id="postSnippet">
+            <button id="submitPost">📝 добавить пост</button>
+        </div>
+        <p style="color: #f8b172;">* Прямые ссылки на фото/видео. Удаление — по кнопке под карточкой.</p>
+    </div>
+
+    <!-- Модалки -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-modal-content">
+            <div class="close-video" id="closeVideoModal">✕</div>
+            <video id="modalVideoPlayer" controls></video>
+        </div>
+    </div>
+
+    <div class="post-modal" id="postModal">
+        <div class="post-modal-content" id="postModalContent">
+            <span class="close-post" id="closePostModal">✕</span>
+            <div id="postModalInner"></div>
+        </div>
+    </div>
+
+    <!-- Модалка логина (поля пустые) -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h3 style="color:#f5a748; margin-bottom: 1rem;">вход администратора</h3>
+            <input type="text" placeholder="логин" id="loginUser">
+            <input type="password" placeholder="пароль" id="loginPass">
+            <button id="loginBtn">войти</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ---- данные с localStorage ----
+            let reels = JSON.parse(localStorage.getItem('orator_reels_v2')) || [
+                { id: 'r1', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4', cover: 'https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=400&h=600&fit=crop', title: 'Голос и тембр', description: 'Как звучать уверенно' },
+                { id: 'r2', videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4', cover: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=400&h=600&fit=crop', title: 'Самопрезентация', description: 'Советы за 1 минуту' },
+            ];
+            let posts = JSON.parse(localStorage.getItem('orator_posts_v2')) || [
+                { id: 'p1', authorPhoto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop', title: 'Страх камеры', fullText: 'Все боятся сначала. Важно просто начать и смотреть в объектив как в глаза другу. Через неделю страх уйдёт.', snippet: 'Простой способ убрать страх...' },
+                { id: 'p2', authorPhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop', title: 'Жесты оратора', fullText: 'Открытые жесты располагают аудиторию. Держите руки на виду, не скрещивайте. Добавляйте жесты-иллюстраторы.', snippet: 'Куда девать руки?' },
+            ];
+
+            let isAdmin = false;
+
+            // ---- рендер рилсов ----
+            function renderReels() {
+                const container = document.getElementById('reelsContainer');
+                container.innerHTML = reels.map(reel => `
+                    <div class="reel-card" data-video="${reel.videoUrl}" data-id="${reel.id}">
+                        <div class="reel-cover">
+                            <img src="${reel.cover}" alt="cover" loading="lazy">
+                            <div class="play-overlay"><span class="play-icon">▶</span></div>
+                        </div>
+                        <div class="reel-info">
+                            <div class="reel-title">${reel.title}</div>
+                            <div class="reel-desc">${reel.description}</div>
+                            ${isAdmin ? `<div class="admin-controls"><button class="admin-btn delete" data-reel-id="${reel.id}">✕ удалить</button></div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                // клик на карточку видео
+                document.querySelectorAll('.reel-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('delete') || e.target.closest('.delete')) return;
+                        const videoUrl = card.dataset.video;
+                        openVideoPlayer(videoUrl);
+                    });
+                });
+
+                if (isAdmin) {
+                    document.querySelectorAll('[data-reel-id]').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const id = btn.getAttribute('data-reel-id');
+                            reels = reels.filter(r => r.id !== id);
+                            localStorage.setItem('orator_reels_v2', JSON.stringify(reels));
+                            renderReels();
+                        });
+                    });
+                }
+            }
+
+            // ---- рендер карусели постов ----
+            function renderPostsCarousel() {
+                const carousel = document.getElementById('postsCarousel');
+                carousel.innerHTML = posts.map(post => `
+                    <div class="post-card-preview" data-post-id="${post.id}">
+                        <div class="post-preview-author">
+                            <img src="${post.authorPhoto}" alt="author">
+                        </div>
+                        <div class="post-preview-title">${post.title}</div>
+                        <div class="post-preview-snippet">${post.snippet || post.fullText.substring(0, 60) + '…'}</div>
+                        ${isAdmin ? `<div class="admin-controls"><button class="admin-btn delete" data-post-id="${post.id}">✕ удалить</button></div>` : ''}
+                    </div>
+                `).join('');
+
+                // клик на пост (открыть модалку)
+                document.querySelectorAll('.post-card-preview').forEach(div => {
+                    div.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('delete') || e.target.closest('.delete')) return;
+                        const postId = div.dataset.postId;
+                        const post = posts.find(p => p.id === postId);
+                        if (post) openPostModal(post);
+                    });
+                });
+
+                if (isAdmin) {
+                    document.querySelectorAll('[data-post-id]').forEach(btn => {
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const id = btn.getAttribute('data-post-id');
+                            posts = posts.filter(p => p.id !== id);
+                            localStorage.setItem('orator_posts_v2', JSON.stringify(posts));
+                            renderPostsCarousel();
+                        });
+                    });
+                }
+            }
+
+            // ---- плеер ----
+            const videoModal = document.getElementById('videoModal');
+            const modalVideo = document.getElementById('modalVideoPlayer');
+            function openVideoPlayer(src) {
+                modalVideo.src = src;
+                videoModal.classList.add('active');
+                modalVideo.play();
+            }
+            document.getElementById('closeVideoModal').addEventListener('click', () => {
+                videoModal.classList.remove('active');
+                modalVideo.pause();
+                modalVideo.src = '';
+            });
+            videoModal.addEventListener('click', (e) => {
+                if (e.target === videoModal) {
+                    videoModal.classList.remove('active');
+                    modalVideo.pause();
+                    modalVideo.src = '';
+                }
+            });
+
+            // ---- модалка поста ----
+            const postModal = document.getElementById('postModal');
+            const postModalInner = document.getElementById('postModalInner');
+            function openPostModal(post) {
+                postModalInner.innerHTML = `
+                    <div class="post-modal-author">
+                        <img src="${post.authorPhoto}" alt="author">
+                        <div style="font-weight: 600;">автор</div>
+                    </div>
+                    <div class="post-modal-title">${post.title}</div>
+                    <div class="post-modal-fulltext">${post.fullText}</div>
+                `;
+                postModal.classList.add('active');
+            }
+            document.getElementById('closePostModal').addEventListener('click', () => {
+                postModal.classList.remove('active');
+            });
+            postModal.addEventListener('click', (e) => {
+                if (e.target === postModal) postModal.classList.remove('active');
+            });
+
+            // ---- навигация карусели ----
+            const carousel = document.getElementById('postsCarousel');
+            document.getElementById('scrollLeft').addEventListener('click', () => {
+                carousel.scrollBy({ left: -280, behavior: 'smooth' });
+            });
+            document.getElementById('scrollRight').addEventListener('click', () => {
+                carousel.scrollBy({ left: 280, behavior: 'smooth' });
+            });
+
+            // ---- анимация странного курсора ----
+            function runCursorSequence() {
+                const cursor = document.getElementById('strangeCursor');
+                const ripple = document.getElementById('clickRipple');
+                const hidden = document.getElementById('hiddenContent');
+                const zone = document.getElementById('animZone');
+
+                const zoneRect = zone.getBoundingClientRect();
+                const startX = 30, startY = 30;
+                cursor.style.left = startX + 'px';
+                cursor.style.top = startY + 'px';
+
+                setTimeout(() => {
+                    const targetX = zoneRect.width - 80;
+                    const targetY = zoneRect.height - 80;
+                    cursor.style.left = targetX + 'px';
+                    cursor.style.top = targetY + 'px';
+                }, 400);
+
+                setTimeout(() => {
+                    const zoneRectNow = zone.getBoundingClientRect();
+                    const cursorRect = cursor.getBoundingClientRect();
+                    ripple.style.left = (cursorRect.left - zoneRectNow.left - 10) + 'px';
+                    ripple.style.top = (cursorRect.top - zoneRectNow.top - 10) + 'px';
+                    ripple.style.transform = 'scale(1.6)';
+                    setTimeout(() => ripple.style.transform = 'scale(0)', 200);
+                    hidden.classList.add('revealed');
+                }, 1300);
+            }
+
+            // ---- хаотичные знаки вопроса ----
+            function generateRandomQuestions() {
+                const container = document.getElementById('questionHeadline');
+                const existing = document.querySelectorAll('.floating-question');
+                existing.forEach(el => el.remove());
+                for (let i = 0; i < 16; i++) {
+                    const q = document.createElement('span');
+                    q.className = 'floating-question';
+                    q.textContent = '?';
+                    const randX = Math.random() * 90;
+                    const randY = Math.random() * 80;
+                    const randRot = Math.random() * 40 - 20;
+                    const size = 1.2 + Math.random() * 1.8;
+                    q.style.left = randX + '%';
+                    q.style.top = randY + '%';
+                    q.style.fontSize = (1.2 + Math.random() * 2) + 'rem';
+                    q.style.transform = `rotate(${randRot}deg) scale(${size})`;
+                    q.style.opacity = 0.2 + Math.random() * 0.4;
+                    container.appendChild(q);
+                }
+            }
+
+            // ---- админка логин (поля без value) ----
+            const loginModal = document.getElementById('loginModal');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const userInput = document.getElementById('loginUser');
+            const passInput = document.getElementById('loginPass');
+            const adminPanel = document.getElementById('adminPanel');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            adminLoginBtn.addEventListener('click', () => loginModal.classList.add('active'));
+
+            loginBtn.addEventListener('click', () => {
+                if (userInput.value === 'stroot' && passInput.value === 'AUSDFGi76asdkg') {
+                    isAdmin = true;
+                    adminPanel.style.display = 'block';
+                    loginModal.classList.remove('active');
+                    userInput.value = '';
+                    passInput.value = '';
+                    renderReels();
+                    renderPostsCarousel();
+                } else {
+                    alert('неверная пара');
+                }
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                isAdmin = false;
+                adminPanel.style.display = 'none';
+                renderReels();
+                renderPostsCarousel();
+            });
+
+            window.addEventListener('click', (e) => {
+                if (e.target === loginModal) loginModal.classList.remove('active');
+            });
+
+            // ---- добавление через админку ----
+            document.getElementById('submitReel').addEventListener('click', () => {
+                const video = document.getElementById('reelVideo').value.trim();
+                const cover = document.getElementById('reelCover').value.trim();
+                const title = document.getElementById('reelTitle').value.trim();
+                const desc = document.getElementById('reelDesc').value.trim();
+                if (!video || !cover || !title) return alert('заполни всё');
+                reels.push({
+                    id: 'r' + Date.now() + Math.random().toString(36),
+                    videoUrl: video,
+                    cover: cover,
+                    title: title,
+                    description: desc || ' '
+                });
+                localStorage.setItem('orator_reels_v2', JSON.stringify(reels));
+                renderReels();
+                document.getElementById('reelVideo').value = '';
+                document.getElementById('reelCover').value = '';
+                document.getElementById('reelTitle').value = '';
+                document.getElementById('reelDesc').value = '';
+            });
+
+            document.getElementById('submitPost').addEventListener('click', () => {
+                const photo = document.getElementById('postAuthorImg').value.trim();
+                const title = document.getElementById('postTitle').value.trim();
+                const full = document.getElementById('postText').value.trim();
+                const snippet = document.getElementById('postSnippet').value.trim() || full.substring(0, 70);
+                if (!photo || !title || !full) return alert('заполни фото, заголовок и полный текст');
+                posts.push({
+                    id: 'p' + Date.now() + Math.random().toString(36),
+                    authorPhoto: photo,
+                    title: title,
+                    fullText: full,
+                    snippet: snippet
+                });
+                localStorage.setItem('orator_posts_v2', JSON.stringify(posts));
+                renderPostsCarousel();
+                document.getElementById('postAuthorImg').value = '';
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postText').value = '';
+                document.getElementById('postSnippet').value = '';
+            });
+
+            // ---- инициализация ----
+            generateRandomQuestions();
+            renderReels();
+            renderPostsCarousel();
+            window.addEventListener('load', () => {
+                runCursorSequence();
+            });
+
+            document.getElementById('animZone').addEventListener('click', (e) => {
+                if (e.target.closest('.admin-login-trigger')) return;
+                document.getElementById('hiddenContent').classList.remove('revealed');
+                setTimeout(() => runCursorSequence(), 50);
+            });
+        })();
+    </script>
+</body>
+</html>
